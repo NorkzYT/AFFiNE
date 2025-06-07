@@ -148,7 +148,12 @@ export class AffineMobileLinkedDocMenu extends SignalWatcher(
   }
 
   get keyboard() {
-    return this.context.std.get(VirtualKeyboardProvider);
+    return (
+      this.context.std.getOptional(VirtualKeyboardProvider) ?? {
+        visible$: signal(false),
+        height$: signal(0),
+      }
+    );
   }
 
   override connectedCallback() {

@@ -19,6 +19,7 @@ import { Framework, FrameworkRoot, getCurrentStore } from '@toeverything/infra';
 import { OpClient } from '@toeverything/infra/op';
 import { Suspense } from 'react';
 import { RouterProvider } from 'react-router-dom';
+import { VirtualKeyboardProvider } from '@affine/core/mobile/modules/virtual-keyboard';
 
 const cache = createEmotionCache();
 
@@ -51,6 +52,31 @@ configureCommonModules(framework);
 configureBrowserWorkbenchModule(framework);
 configureLocalStorageStateStorageImpls(framework);
 configureBrowserWorkspaceFlavours(framework);
+framework.impl(VirtualKeyboardProvider, {
+  onChange: callback => {
+    if (!visualViewport) {
+      console.warn('visualViewport is not supported');
+      return () => {};
+    }
+
+    const listener = () => {
+      if (!visualViewport) return;
+      const windowHeight = window.innerHeight;
+      callback({
+        visible: window.innerHeight - visualViewport.height > 0,
+        height:
+          windowHeight - visualViewport.height - visualViewport.offsetTop,
+      });
+    };
+
+    visualViewport.addEventListener('resize', listener);
+    visualViewport.addEventListener('scroll', listener);
+    return () => {
+      visualViewport?.removeEventListener('resize', listener);
+      visualViewport?.removeEventListener('scroll', listener);
+    };
+  },
+});
 framework.impl(NbstoreProvider, {
   openStore(key, options) {
     return storeManagerClient.open(key, options);

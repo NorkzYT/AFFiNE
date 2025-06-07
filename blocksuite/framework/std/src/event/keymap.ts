@@ -122,6 +122,22 @@ export function androidBindKeymapPatch(
       return bindings['Backspace'](ctx);
     }
 
+    if (
+      event.inputType === 'insertParagraph' &&
+      'Enter' in bindings
+    ) {
+      return bindings['Enter'](ctx);
+    }
+
+    if (
+      (event.inputType === 'insertText' ||
+        event.inputType === 'insertCompositionText') &&
+      event.data === ' ' &&
+      'Space' in bindings
+    ) {
+      return bindings['Space'](ctx);
+    }
+
     return false;
   };
 }

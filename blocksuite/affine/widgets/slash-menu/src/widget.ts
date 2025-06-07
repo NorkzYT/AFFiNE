@@ -141,6 +141,30 @@ export class AffineSlashMenuWidget extends WidgetComponent {
     });
   };
 
+  private readonly _onBeforeInput = (ctx: UIEventStateContext) => {
+    const event = ctx.get('defaultState').event as InputEvent;
+
+    if (
+      event.inputType !== 'insertText' &&
+      event.inputType !== 'insertCompositionText'
+    ) {
+      return;
+    }
+
+    if (event.data !== AFFINE_SLASH_MENU_TRIGGER_KEY) return;
+
+    const inlineEditor = this._getInlineEditor(event);
+    if (!inlineEditor) return;
+
+    const sub = inlineEditor.slots.inputting.subscribe(() => {
+      sub.unsubscribe();
+      inlineEditor
+        .waitForUpdate()
+        .then(() => this._handleInput(inlineEditor, false))
+        .catch(console.error);
+    });
+  };
+
   private readonly _onCompositionEnd = (ctx: UIEventStateContext) => {
     const event = ctx.get('defaultState').event as CompositionEvent;
 
@@ -177,7 +201,7 @@ export class AffineSlashMenuWidget extends WidgetComponent {
   override connectedCallback() {
     super.connectedCallback();
 
-    // this.handleEvent('beforeInput', this._onBeforeInput);
+    this.handleEvent('beforeInput', this._onBeforeInput);
     this.handleEvent('keyDown', this._onKeyDown);
     this.handleEvent('compositionEnd', this._onCompositionEnd);
   }

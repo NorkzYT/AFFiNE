@@ -37,7 +37,18 @@ export class AffineKeyboardToolbarWidget extends WidgetComponent<RootBlockModel>
   private _initialInputMode: string = '';
 
   get keyboard(): VirtualKeyboardProviderWithAction & { fallback?: boolean } {
-    const provider = this.std.get(VirtualKeyboardProvider);
+    const provider = this.std.getOptional(VirtualKeyboardProvider);
+    if (!provider) {
+      const emptySignal = signal(false);
+      return {
+        visible$: emptySignal,
+        height$: signal(0),
+        show: () => { },
+        hide: () => { },
+        fallback: true,
+      } as VirtualKeyboardProviderWithAction & { fallback?: boolean };
+    }
+
     if (isVirtualKeyboardProviderWithAction(provider)) return provider;
 
     return {
@@ -55,6 +66,7 @@ export class AffineKeyboardToolbarWidget extends WidgetComponent<RootBlockModel>
         }
       },
       ...provider,
+      fallback: true,
     };
   }
 
