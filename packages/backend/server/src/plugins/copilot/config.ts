@@ -9,7 +9,7 @@ import {
 } from './providers/anthropic';
 import type { FalConfig } from './providers/fal';
 import { GeminiGenerativeConfig, GeminiVertexConfig } from './providers/gemini';
-import { OpenAIConfig } from './providers/openai';
+import { OpenAIConfig, OpenAIJSONSchema } from './providers/openai';
 import { PerplexityConfig } from './providers/perplexity';
 import { VertexSchema } from './providers/types';
 declare global {
@@ -47,6 +47,7 @@ defineModuleConfig('copilot', {
       apiKey: '',
     },
     link: 'https://github.com/openai/openai-node',
+    schema: OpenAIJSONSchema,
   },
   'providers.fal': {
     desc: 'The config for the fal provider.',

@@ -20,6 +20,7 @@ import {
   CopilotProviderSideError,
   metrics,
   UserFriendlyError,
+  type JSONSchema,
 } from '../../../base';
 import { createExaCrawlTool, createExaSearchTool } from '../tools';
 import { CopilotProvider } from './provider';
@@ -29,7 +30,9 @@ import type {
   CopilotImageOptions,
   CopilotStructuredOptions,
   ModelConditions,
+  ModelFullConditions,
   PromptMessage,
+  CopilotProviderModel,
 } from './types';
 import { CopilotProviderType, ModelInputType, ModelOutputType } from './types';
 import { chatToGPTMessage, CitationParser, TextStreamParser } from './utils';
@@ -39,6 +42,31 @@ export const DEFAULT_DIMENSIONS = 256;
 export type OpenAIConfig = {
   apiKey: string;
   baseUrl?: string;
+  /**
+   * Override default models for each output type.
+   * Keys should match ModelOutputType values
+   * such as `text`, `structured`, `embedding`, `image`.
+   */
+  defaultModels?: Partial<Record<ModelOutputType, string>>;
+};
+
+export const OpenAIJSONSchema: JSONSchema = {
+  type: 'object',
+  description: 'The config for the openai provider.',
+  properties: {
+    apiKey: { type: 'string' },
+    baseUrl: { type: 'string', description: 'The base url for the openai provider.' },
+    defaultModels: {
+      type: 'object',
+      description: 'Default models for each output type.',
+      properties: {
+        text: { type: 'string' },
+        structured: { type: 'string' },
+        embedding: { type: 'string' },
+        image: { type: 'string' },
+      },
+    },
+  },
 };
 
 const ImageResponseSchema = z.union([
@@ -57,6 +85,8 @@ const ImageResponseSchema = z.union([
 
 export class OpenAIProvider extends CopilotProvider<OpenAIConfig> {
   readonly type = CopilotProviderType.OpenAI;
+
+  private defaultModels: Partial<Record<ModelOutputType, string>> = {};
 
   readonly models = [
     // Text to Text models
@@ -218,6 +248,14 @@ export class OpenAIProvider extends CopilotProvider<OpenAIConfig> {
       apiKey: this.config.apiKey,
       baseURL: this.config.baseUrl,
     });
+    this.defaultModels = this.config.defaultModels ?? {};
+  }
+
+  protected override selectModel(cond: ModelFullConditions): CopilotProviderModel {
+    const modelId =
+      cond.modelId ||
+      (cond.outputType ? this.defaultModels[cond.outputType] : undefined);
+    return super.selectModel({ ...cond, modelId });
   }
 
   private handleError(

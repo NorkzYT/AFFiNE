@@ -625,6 +625,33 @@
         "providers.openai": {
           "type": "object",
           "description": "The config for the openai provider.\n@default {\"apiKey\":\"\"}\n@link https://github.com/openai/openai-node",
+          "properties": {
+            "apiKey": {
+              "type": "string"
+            },
+            "baseUrl": {
+              "type": "string",
+              "description": "The base url for the openai provider."
+            },
+            "defaultModels": {
+              "type": "object",
+              "description": "Default models for each output type.",
+              "properties": {
+                "text": {
+                  "type": "string"
+                },
+                "structured": {
+                  "type": "string"
+                },
+                "embedding": {
+                  "type": "string"
+                },
+                "image": {
+                  "type": "string"
+                }
+              }
+            }
+          },
           "default": {
             "apiKey": ""
           }
