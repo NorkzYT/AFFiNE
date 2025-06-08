@@ -11,6 +11,7 @@ export interface CalendarSubscriptionConfig {
   name?: string;
   showEvents?: boolean;
   showAllDayEvents?: boolean;
+  authorization?: string;
 }
 type CalendarSubscriptionStore = Record<string, CalendarSubscriptionConfig>;
 
@@ -49,17 +50,18 @@ export class CalendarStore extends Store {
       showEvents: true,
       showAllDayEvents: true,
       color: this.getRandomColor(),
+      authorization: undefined,
     };
   }
 
   authService = this.workspaceServerService.server?.scope.get(AuthService);
   userId$ =
     this.workspaceService.workspace.meta.flavour === 'local' ||
-    !this.authService
+      !this.authService
       ? new LiveData('__local__')
       : this.authService.session.account$.map(
-          account => account?.id ?? '__local__'
-        );
+        account => account?.id ?? '__local__'
+      );
   storageKey$() {
     const workspaceId = this.workspaceService.workspace.id;
     return this.userId$.map(userId => this._getKey(userId, workspaceId));

@@ -40,6 +40,7 @@ const AddSubscription = () => {
   const t = useI18n();
   const [open, setOpen] = useState(false);
   const [url, setUrl] = useState('');
+  const [authorization, setAuthorization] = useState('');
   const [verifying, setVerifying] = useState(false);
   const calendar = useService(IntegrationService).calendar;
 
@@ -49,10 +50,14 @@ const AddSubscription = () => {
   const handleClose = useCallback(() => {
     setOpen(false);
     setUrl('');
+    setAuthorization('');
   }, []);
 
   const handleInputChange = useCallback((value: string) => {
     setUrl(value);
+  }, []);
+  const handleAuthChange = useCallback((value: string) => {
+    setAuthorization(value);
   }, []);
 
   const handleAddSub = useCallback(() => {
@@ -69,10 +74,13 @@ const AddSubscription = () => {
 
     setVerifying(true);
     calendar
-      .createSubscription(_url)
+      .createSubscription(_url, {
+        authorization: authorization.trim() || undefined,
+      })
       .then(() => {
         setOpen(false);
         setUrl('');
+        setAuthorization('');
         track.$.settingsPanel.integrationList.connectIntegration({
           type: 'calendar',
           control: 'Calendar Setting',
@@ -87,7 +95,7 @@ const AddSubscription = () => {
       .finally(() => {
         setVerifying(false);
       });
-  }, [calendar, t, url]);
+  }, [authorization, calendar, t, url]);
 
   return (
     <>
@@ -124,6 +132,16 @@ const AddSubscription = () => {
             value={url}
             onChange={handleInputChange}
             placeholder="https://example.com/calendar.ics"
+            onEnter={handleAddSub}
+          />
+          <div className={styles.newDialogLabel}>
+            {t['com.affine.integration.calendar.authorization-label']()}
+          </div>
+          <Input
+            type="text"
+            value={authorization}
+            onChange={handleAuthChange}
+            placeholder={t['com.affine.integration.calendar.authorization-placeholder']()}
             onEnter={handleAddSub}
           />
         </div>

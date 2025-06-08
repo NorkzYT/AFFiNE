@@ -2026,6 +2026,8 @@
   "com.affine.integration.calendar.unsubscribe": "Unsubscribe",
   "com.affine.integration.calendar.new-title": "Add a calendar by URL",
   "com.affine.integration.calendar.new-url-label": "Calendar URL",
+  "com.affine.integration.calendar.authorization-label": "Authorization header (optional)",
+  "com.affine.integration.calendar.authorization-placeholder": "Bearer <token>",
   "com.affine.integration.calendar.new-duplicate-error-title": "This is a duplicate calendar",
   "com.affine.integration.calendar.new-duplicate-error-content": "This subscription calendar already exists in the account of subscribed calendars.",
   "com.affine.integration.calendar.new-error": "An error occurred while adding the calendar",

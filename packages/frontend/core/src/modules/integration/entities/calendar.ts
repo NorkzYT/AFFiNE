@@ -82,10 +82,12 @@ export class CalendarIntegration extends Entity {
     });
   }
 
-  async verifyUrl(_url: string) {
+  async verifyUrl(_url: string, authorization?: string) {
     const url = parseCalendarUrl(_url);
     try {
-      const response = await fetch(url);
+      const response = await fetch(url, {
+        headers: authorization ? { Authorization: authorization } : undefined,
+      });
       const content = await response.text();
       ICAL.parse(content);
       return content;
@@ -95,10 +97,13 @@ export class CalendarIntegration extends Entity {
     }
   }
 
-  async createSubscription(url: string) {
+  async createSubscription(
+    url: string,
+    config?: Partial<CalendarSubscriptionConfig>
+  ) {
     try {
-      const content = await this.verifyUrl(url);
-      this.store.addSubscription(url);
+      const content = await this.verifyUrl(url, config?.authorization);
+      this.store.addSubscription(url, config);
       this.store.setSubscriptionCache(url, content).catch(console.error);
     } catch (err) {
       console.error(err);

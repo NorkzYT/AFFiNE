@@ -117,7 +117,12 @@ export class CalendarSubscription extends Entity<{ url: string }> {
     switchMap(() =>
       fromPromise(async () => {
         const url = parseCalendarUrl(this.url);
-        const response = await fetch(url);
+        const config = this.config$.value;
+        const response = await fetch(url, {
+          headers: config?.authorization
+            ? { Authorization: config.authorization }
+            : undefined,
+        });
         return await response.text();
       }).pipe(
         mergeMap(value => {
