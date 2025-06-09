@@ -15,6 +15,7 @@ import {
   TomorrowIcon,
   YesterdayIcon,
 } from '@blocksuite/icons/lit';
+import { TextSelection } from '@blocksuite/std';
 import { type DeltaInsert, Slice, Text } from '@blocksuite/store';
 
 import { slashMenuToolTips } from './tooltips';
@@ -94,6 +95,15 @@ export const defaultSlashMenuConfig: SlashMenuConfig = {
             previousSiblingModel,
             true
           );
+
+          const textSelection = std.selection.find(TextSelection);
+          if (textSelection) {
+            host.updateComplete
+              .then(() => {
+                std.range.syncTextSelectionToRange(textSelection);
+              })
+              .catch(console.error);
+          }
         },
       },
       {
@@ -111,6 +121,15 @@ export const defaultSlashMenuConfig: SlashMenuConfig = {
           if (!parentModel) return;
 
           host.store.moveBlocks([model], parentModel, nextSiblingModel, false);
+
+          const textSelection = std.selection.find(TextSelection);
+          if (textSelection) {
+            host.updateComplete
+              .then(() => {
+                std.range.syncTextSelectionToRange(textSelection);
+              })
+              .catch(console.error);
+          }
         },
       },
       {
