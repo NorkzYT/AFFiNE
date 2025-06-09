@@ -10,27 +10,11 @@ const buttonOptions: AskAIButtonOptions = {
 
 import type { AffineCodeToolbarWidget } from '@blocksuite/affine/blocks/code';
 import { BlockSelection } from '@blocksuite/affine/std';
-import type { MenuItemGroup } from '@blocksuite/affine-components/toolbar';
 
 import { buildAICodeItemGroups } from '../../_common/config';
 import type { AskAIButtonOptions } from '../../components/ask-ai-button';
 
 export function setupCodeToolbarAIEntry(codeToolbar: AffineCodeToolbarWidget) {
-  // Avoid injecting duplicate Ask AI buttons when the toolbar is re-created,
-  // such as after moving code blocks.
-  const groups = (
-    codeToolbar as unknown as {
-      primaryGroups: MenuItemGroup<any>[];
-    }
-  ).primaryGroups;
-  const exists = groups?.some(group =>
-    group.items.some(item => item.type === 'ask-ai')
-  );
-
-  if (exists) {
-    return;
-  }
-
   codeToolbar.addPrimaryItems(
     [
       {

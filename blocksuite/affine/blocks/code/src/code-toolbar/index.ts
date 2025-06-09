@@ -30,9 +30,6 @@ export class AffineCodeToolbarWidget extends WidgetComponent<
   private _isActivated = false;
 
   private readonly _setHoverController = () => {
-    // Abort any existing hover controller to avoid leftover toolbars
-    this._hoverController?.abort(true);
-
     this._hoverController = null;
     this._hoverController = new HoverController(
       this,
@@ -168,23 +165,6 @@ export class AffineCodeToolbarWidget extends WidgetComponent<
 
   protected primaryGroups: MenuItemGroup<CodeBlockToolbarContext>[] =
     cloneGroups(PRIMARY_GROUPS);
-
-  override connectedCallback(): void {
-    super.connectedCallback();
-    // Reinitialize hover controller whenever the element is connected in case
-    // it was recreated after moving the block.
-    this._setHoverController();
-    this.disposables.add(
-      this.std.view.viewUpdated.subscribe(payload => {
-        if (payload.type !== 'block' || payload.id !== this.model.id) return;
-        if (payload.method === 'add') {
-          this._setHoverController();
-        } else if (payload.method === 'delete') {
-          this._hoverController?.abort();
-        }
-      })
-    );
-  }
 
   override firstUpdated() {
     this.moreGroups = getMoreMenuConfig(this.std).configure(this.moreGroups);
