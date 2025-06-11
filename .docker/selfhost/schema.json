@@ -592,6 +592,11 @@
           "type": "boolean",
           "description": "Allow guests to access demo workspace.\n@default true",
           "default": true
+        },
+        "allowGuestLocalWorkspace": {
+          "type": "boolean",
+          "description": "Allow guests to use local workspace.\n@default true",
+          "default": true
         }
       }
     },

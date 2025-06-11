@@ -44,4 +44,10 @@ export class ServerConfigType {
     nullable: true,
   })
   allowGuestDemoWorkspace?: boolean | null;
+
+  @Field(() => Boolean, {
+    description: 'allow guests to use local workspace',
+    nullable: true,
+  })
+  allowGuestLocalWorkspace?: boolean | null;
 }

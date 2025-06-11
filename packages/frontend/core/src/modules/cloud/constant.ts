@@ -27,6 +27,7 @@ export const BUILD_IN_SERVERS: (ServerMetadata & { config: ServerConfig })[] =
               },
             },
             allowGuestDemoWorkspace: true,
+            allowGuestLocalWorkspace: true,
           },
         },
       ]
@@ -54,6 +55,7 @@ export const BUILD_IN_SERVERS: (ServerMetadata & { config: ServerConfig })[] =
                 },
               },
               allowGuestDemoWorkspace: true,
+              allowGuestLocalWorkspace: true,
             },
           },
         ]
@@ -79,6 +81,7 @@ export const BUILD_IN_SERVERS: (ServerMetadata & { config: ServerConfig })[] =
                   },
                 },
                 allowGuestDemoWorkspace: true,
+                allowGuestLocalWorkspace: true,
               },
             },
           ]
@@ -104,6 +107,7 @@ export const BUILD_IN_SERVERS: (ServerMetadata & { config: ServerConfig })[] =
                     },
                   },
                   allowGuestDemoWorkspace: true,
+                  allowGuestLocalWorkspace: true,
                 },
               },
             ]
@@ -129,6 +133,7 @@ export const BUILD_IN_SERVERS: (ServerMetadata & { config: ServerConfig })[] =
                       },
                     },
                     allowGuestDemoWorkspace: true,
+                    allowGuestLocalWorkspace: true,
                   },
                 },
               ]
@@ -154,6 +159,7 @@ export const BUILD_IN_SERVERS: (ServerMetadata & { config: ServerConfig })[] =
                         },
                       },
                       allowGuestDemoWorkspace: true,
+                      allowGuestLocalWorkspace: true,
                     },
                   },
                 ]

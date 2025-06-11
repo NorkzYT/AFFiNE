@@ -33,6 +33,7 @@ export const adminServerConfigQuery = {
     name
     features
     allowGuestDemoWorkspace
+    allowGuestLocalWorkspace
     type
     initialized
     credentialsRequirement {
@@ -1704,6 +1705,7 @@ export const serverConfigQuery = {
     name
     features
     allowGuestDemoWorkspace
+    allowGuestLocalWorkspace
     type
     initialized
     credentialsRequirement {

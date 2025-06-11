@@ -8,6 +8,7 @@ query adminServerConfig {
     name
     features
     allowGuestDemoWorkspace
+    allowGuestLocalWorkspace
     type
     initialized
     credentialsRequirement {

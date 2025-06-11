@@ -207,6 +207,10 @@
     "allowGuestDemoWorkspace": {
       "type": "Boolean",
       "desc": "Allow guests to access demo workspace."
+    },
+    "allowGuestLocalWorkspace": {
+      "type": "Boolean",
+      "desc": "Allow guests to use local workspace."
     }
   },
   "captcha": {

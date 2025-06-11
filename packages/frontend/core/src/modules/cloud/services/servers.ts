@@ -83,6 +83,7 @@ export class ServersService extends Service {
         features: config.features,
         oauthProviders: config.oauthProviders,
         allowGuestDemoWorkspace: config.allowGuestDemoWorkspace,
+        allowGuestLocalWorkspace: config.allowGuestLocalWorkspace,
         serverName: config.name,
         type: config.type,
         initialized: config.initialized,

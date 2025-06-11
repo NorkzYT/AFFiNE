@@ -6,6 +6,7 @@ export interface VersionConfig {
     requiredVersion: string;
   };
   allowGuestDemoWorkspace?: boolean;
+  allowGuestLocalWorkspace?: boolean;
 }
 
 declare global {
@@ -31,6 +32,10 @@ defineModuleConfig('client', {
   },
   allowGuestDemoWorkspace: {
     desc: 'Allow guests to access demo workspace.',
+    default: true,
+  },
+  allowGuestLocalWorkspace: {
+    desc: 'Allow guests to use local workspace.',
     default: true,
   },
 });

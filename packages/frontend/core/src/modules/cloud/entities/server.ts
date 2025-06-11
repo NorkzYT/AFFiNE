@@ -83,6 +83,7 @@ export class Server extends Entity<{
             features: config.features,
             oauthProviders: config.oauthProviders,
             allowGuestDemoWorkspace: config.allowGuestDemoWorkspace,
+            allowGuestLocalWorkspace: config.allowGuestLocalWorkspace,
             serverName: config.name,
             type: config.type,
             version: config.version,

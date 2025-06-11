@@ -87,6 +87,8 @@ export class ServerConfigResolver {
       features: this.server.features,
       allowGuestDemoWorkspace:
         this.config.client?.allowGuestDemoWorkspace ?? true,
+      allowGuestLocalWorkspace:
+        this.config.client?.allowGuestLocalWorkspace ?? true,
     };
   }
 

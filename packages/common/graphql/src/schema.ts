@@ -2152,6 +2152,8 @@ export interface ServerConfigType {
   features: Array<ServerFeature>;
   /** allow guests to access demo workspace */
   allowGuestDemoWorkspace: Scalars['Boolean']['output'];
+  /** allow guests to use local workspace */
+  allowGuestLocalWorkspace: Scalars['Boolean']['output'];
   /** whether server has been initialized */
   initialized: Scalars['Boolean']['output'];
   /** server identical name could be shown as badge on user interface */
@@ -2711,6 +2713,7 @@ export type AdminServerConfigQuery = {
     name: string;
     features: Array<ServerFeature>;
     allowGuestDemoWorkspace: boolean;
+    allowGuestLocalWorkspace: boolean;
     type: ServerDeploymentType;
     initialized: boolean;
     availableUserFeatures: Array<FeatureType>;
@@ -4655,6 +4658,7 @@ export type ServerConfigQuery = {
     name: string;
     features: Array<ServerFeature>;
     allowGuestDemoWorkspace: boolean;
+    allowGuestLocalWorkspace: boolean;
     type: ServerDeploymentType;
     initialized: boolean;
     credentialsRequirement: {

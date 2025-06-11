@@ -10,6 +10,7 @@ const signOutFn = vi.fn();
 const jumpToIndex = vi.fn();
 const jumpToSignIn = vi.fn();
 let allowGuestDemo = true;
+let allowGuestLocal = false;
 
 vi.mock('@affine/core/modules/cloud', () => ({
   AuthService: class {},
@@ -26,6 +27,9 @@ vi.mock('@toeverything/infra', () => {
             value: {
               get allowGuestDemoWorkspace() {
                 return allowGuestDemo;
+              },
+              get allowGuestLocalWorkspace() {
+                return allowGuestLocal;
               },
             },
           },
@@ -61,6 +65,7 @@ describe('useSignOut', () => {
     signOutFn.mockClear();
     jumpToIndex.mockClear();
     jumpToSignIn.mockClear();
+    allowGuestLocal = false;
   });
 
   test('redirects to index when guest demo allowed', async () => {
@@ -72,8 +77,19 @@ describe('useSignOut', () => {
     expect(jumpToSignIn).not.toHaveBeenCalled();
   });
 
+  test('redirects to index when local workspace allowed', async () => {
+    allowGuestDemo = false;
+    allowGuestLocal = true;
+    const { result } = renderHook(() => useSignOut());
+    result.current();
+    await waitFor(() => expect(signOutFn).toHaveBeenCalled());
+    expect(jumpToIndex).toHaveBeenCalled();
+    expect(jumpToSignIn).not.toHaveBeenCalled();
+  });
+
   test('redirects to sign in when guest demo disabled', async () => {
     allowGuestDemo = false;
+    allowGuestLocal = false;
     const { result } = renderHook(() => useSignOut());
     result.current();
     await waitFor(() => expect(signOutFn).toHaveBeenCalled());

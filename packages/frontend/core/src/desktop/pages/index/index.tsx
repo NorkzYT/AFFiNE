@@ -58,6 +58,12 @@ export const Component = ({
         c => c.allowGuestDemoWorkspace
       )
     ) ?? true;
+  const allowGuestLocal =
+    useLiveData(
+      defaultServerService.server.config$.selector(
+        c => c.allowGuestLocalWorkspace
+      )
+    ) ?? BUILD_CONFIG.isElectron;
 
   const workspacesService = useService(WorkspacesService);
   const list = useLiveData(workspacesService.list.workspaces$);
@@ -92,7 +98,7 @@ export const Component = ({
       return;
     }
 
-    if (!allowGuestDemo && !loggedIn) {
+    if (!allowGuestDemo && !allowGuestLocal && !loggedIn) {
       localStorage.removeItem('last_workspace_id');
       jumpToSignIn();
       return;
@@ -126,6 +132,7 @@ export const Component = ({
     }
   }, [
     allowGuestDemo,
+    allowGuestLocal,
     createCloudWorkspace,
     list,
     openPage,
@@ -147,7 +154,7 @@ export const Component = ({
     if (listIsLoading || list.length > 0) {
       return;
     }
-    if (!allowGuestDemo && !loggedIn) {
+    if (!allowGuestDemo && !allowGuestLocal && !loggedIn) {
       localStorage.removeItem('last_workspace_id');
       jumpToSignIn();
       return;
@@ -178,6 +185,7 @@ export const Component = ({
     openPage,
     workspacesService,
     allowGuestDemo,
+    allowGuestLocal,
     loggedIn,
     listIsLoading,
     list,

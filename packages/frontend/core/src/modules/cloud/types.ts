@@ -15,6 +15,7 @@ export interface ServerConfig {
   serverName: string;
   features: ServerFeature[];
   allowGuestDemoWorkspace: boolean;
+  allowGuestLocalWorkspace: boolean;
   oauthProviders: OAuthProviderType[];
   type: ServerDeploymentType;
   initialized?: boolean;
