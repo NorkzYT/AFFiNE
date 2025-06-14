@@ -370,17 +370,17 @@ export const popGroupSetting = (
                         onBack,
                         onClose,
                         middleware
-                      );
-                    },
-                    onBack: () => {
-                      menuHandler.close();
-                      popGroupSetting(
-                        target,
-                        group,
-                        onBack,
-                        onClose,
-                        middleware
-                      );
+                    postfix: () => html`
+                            isSelected: () =>
+                          postfix: () => html`
+                              ${group.groupInfo$.value?.config.name === 'date-week-mon'
+                            isSelected: () =>
+                              isSelected: () =>
+                    postfix: () => html`
+                          isSelected: () => group.sortAsc$.value,
+                          isSelected: () => !group.sortAsc$.value,
+              isSelected: () => group.hideEmpty$.value,
+              closeOnSelect: false,
                     },
                     onClose,
                   }),

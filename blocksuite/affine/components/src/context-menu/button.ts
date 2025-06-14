@@ -18,7 +18,7 @@ import type { MenuClass, MenuItemRender } from './types.js';
 
 export type MenuButtonData = {
   content: () => TemplateResult;
-  class: ClassInfo;
+  class: ClassInfo | (() => ClassInfo);
   select: (ele: HTMLElement) => void | false;
   onHover?: (hover: boolean) => void;
   closeOnSelect?: boolean;
@@ -95,10 +95,12 @@ export class MenuButton extends MenuFocusable {
   }
 
   protected override render(): unknown {
+    const extraClass =
+      typeof this.data.class === 'function' ? this.data.class() : this.data.class;
     const classString = classMap({
       'affine-menu-button': true,
       focused: this.isFocused$.value,
-      ...this.data.class,
+      ...extraClass,
     });
     return html` <div class="${classString}">${this.data.content()}</div>`;
   }
@@ -157,10 +159,12 @@ export class MobileMenuButton extends MenuFocusable {
   }
 
   protected override render(): unknown {
+    const extraClass =
+      typeof this.data.class === 'function' ? this.data.class() : this.data.class;
     const classString = classMap({
       'mobile-menu-button': true,
       focused: this.isFocused$.value,
-      ...this.data.class,
+      ...extraClass,
     });
     return html` <div class="${classString}">${this.data.content()}</div>`;
   }
@@ -187,8 +191,8 @@ export const menuButtonItems = {
       name: string;
       label?: () => TemplateResult;
       prefix?: TemplateResult;
-      postfix?: TemplateResult;
-      isSelected?: boolean;
+      postfix?: TemplateResult | (() => TemplateResult);
+      isSelected?: boolean | ReadonlySignal<boolean> | (() => boolean);
       select: (ele: HTMLElement) => void | false;
       onHover?: (hover: boolean) => void;
       class?: MenuClass;
@@ -199,23 +203,41 @@ export const menuButtonItems = {
       if (config.hide?.() || !menu.search(config.name)) {
         return;
       }
+      const getSelected = () => {
+        if (typeof config.isSelected === 'function') {
+          return config.isSelected();
+        }
+        if (
+          typeof config.isSelected === 'object' &&
+          config.isSelected !== null &&
+          'value' in config.isSelected
+        ) {
+          return (config.isSelected as ReadonlySignal<boolean>).value;
+        }
+        return config.isSelected ?? false;
+      };
+      const getPostfix = () =>
+        typeof config.postfix === 'function'
+          ? config.postfix()
+          : config.postfix;
       const data: MenuButtonData = {
         content: () => {
+          const selected = getSelected();
           return html`
             ${config.prefix}
             <div class="affine-menu-action-text">
               ${config.label?.() ?? config.name}
             </div>
-            ${config.postfix ?? (config.isSelected ? DoneIcon() : undefined)}
+            ${getPostfix() ?? (selected ? DoneIcon() : undefined)}
           `;
         },
         onHover: config.onHover,
         select: config.select,
         closeOnSelect: config.closeOnSelect,
-        class: {
-          'selected-item': config.isSelected ?? false,
+        class: () => ({
+          'selected-item': getSelected(),
           ...config.class,
-        },
+        }),
       };
       return renderButton(data, menu);
     },
