@@ -423,30 +423,36 @@ export const popGroupSetting = (
                                 ['Day', 'date-day'],
                                 [
                                   'Week',
-                                  group.groupInfo$.value?.config.name === 'date-week-mon'
+                                  group.groupInfo$.value?.config.name ===
+                                  'date-week-mon'
                                     ? 'date-week-mon'
                                     : 'date-week-sun',
                                 ],
                                 ['Month', 'date-month'],
                                 ['Year', 'date-year'],
                               ] as [string, string][]
-                            ).map(([label, key]): MenuConfig =>
-                              menu.action({
-                                name: label,
-                                label: () => {
-                                  const isSelected =
-                                    group.groupInfo$.value?.config.name === key;
-                                  return html`<span
-                                    style="font-size:14px;color:${isSelected
-                                      ? 'var(--affine-text-emphasis-color)'
-                                      : 'var(--affine-text-secondary-color)'}"
-                                    >${label}</span
-                                  >`;
-                                },
-                                isSelected:
-                                  group.groupInfo$.value?.config.name === key,
-                                select: () => group.changeGroupMode(key),
-                              })
+                            ).map(
+                              ([label, key]): MenuConfig =>
+                                menu.action({
+                                  name: label,
+                                  label: () => {
+                                    const isSelected =
+                                      group.groupInfo$.value?.config.name ===
+                                      key;
+                                    return html`<span
+                                      style="font-size:14px;color:${isSelected
+                                        ? 'var(--affine-text-emphasis-color)'
+                                        : 'var(--affine-text-secondary-color)'}"
+                                      >${label}</span
+                                    >`;
+                                  },
+                                  isSelected:
+                                    group.groupInfo$.value?.config.name === key,
+                                  select: () => {
+                                    group.changeGroupMode(key);
+                                    return false;
+                                  },
+                                })
                             )
                           ),
                         ],
@@ -486,7 +492,8 @@ export const popGroupSetting = (
                                       name: label,
                                       label: () => {
                                         const isSelected =
-                                          group.groupInfo$.value?.config.name === key;
+                                          group.groupInfo$.value?.config
+                                            .name === key;
                                         return html`<span
                                           style="font-size:14px;color:${isSelected
                                             ? 'var(--affine-text-emphasis-color)'
@@ -495,8 +502,12 @@ export const popGroupSetting = (
                                         >`;
                                       },
                                       isSelected:
-                                        group.groupInfo$.value?.config.name === key,
-                                      select: () => group.changeGroupMode(key),
+                                        group.groupInfo$.value?.config.name ===
+                                        key,
+                                      select: () => {
+                                        group.changeGroupMode(key);
+                                        return false;
+                                      },
                                     })
                                   )
                                 ),
@@ -508,61 +519,67 @@ export const popGroupSetting = (
                     }),
                   ]
                 : []),
-                menu.group({
-                  items: [
-                    menu.dynamic(() => [
-                      menu.subMenu({
-                        name: 'Sort',
-                        openOnHover: false,
-                        middleware: dropdownSubMenuMiddleware,
-                        autoHeight: true,
-                        postfix: html`
-                          <div
-                            style="display:flex;align-items:center;gap:4px;font-size:14px;line-height:20px;color:var(--affine-text-secondary-color);margin-left:8px;"
-                          >
-                            ${group.sortAsc$.value
-                              ? 'Oldest first'
-                              : 'Newest first'}
-                          </div>
-                        `,
-                        options: {
-                          items: [
-                            menu.dynamic(() => [
-                              menu.action({
-                                name: 'Oldest first',
-                                label: () => {
-                                  const isSelected = group.sortAsc$.value;
-                                  return html`<span
-                                    style="font-size:14px;color:${isSelected
-                                      ? 'var(--affine-text-emphasis-color)'
-                                      : 'var(--affine-text-secondary-color)'}"
-                                    >Oldest first</span
-                                  >`;
-                                },
-                                isSelected: group.sortAsc$.value,
-                                select: () => group.setDateSortOrder(true),
-                              }),
-                              menu.action({
-                                name: 'Newest first',
-                                label: () => {
-                                  const isSelected = !group.sortAsc$.value;
-                                  return html`<span
-                                    style="font-size:14px;color:${isSelected
-                                      ? 'var(--affine-text-emphasis-color)'
-                                      : 'var(--affine-text-secondary-color)'}"
-                                    >Newest first</span
-                                  >`;
-                                },
-                                isSelected: !group.sortAsc$.value,
-                                select: () => group.setDateSortOrder(false),
-                              }),
-                            ]),
-                          ],
-                        },
-                      }),
-                    ]),
-                  ],
-                }),
+              menu.group({
+                items: [
+                  menu.dynamic(() => [
+                    menu.subMenu({
+                      name: 'Sort',
+                      openOnHover: false,
+                      middleware: dropdownSubMenuMiddleware,
+                      autoHeight: true,
+                      postfix: html`
+                        <div
+                          style="display:flex;align-items:center;gap:4px;font-size:14px;line-height:20px;color:var(--affine-text-secondary-color);margin-left:8px;"
+                        >
+                          ${group.sortAsc$.value
+                            ? 'Oldest first'
+                            : 'Newest first'}
+                        </div>
+                      `,
+                      options: {
+                        items: [
+                          menu.dynamic(() => [
+                            menu.action({
+                              name: 'Oldest first',
+                              label: () => {
+                                const isSelected = group.sortAsc$.value;
+                                return html`<span
+                                  style="font-size:14px;color:${isSelected
+                                    ? 'var(--affine-text-emphasis-color)'
+                                    : 'var(--affine-text-secondary-color)'}"
+                                  >Oldest first</span
+                                >`;
+                              },
+                              isSelected: group.sortAsc$.value,
+                              select: () => {
+                                group.setDateSortOrder(true);
+                                return false;
+                              },
+                            }),
+                            menu.action({
+                              name: 'Newest first',
+                              label: () => {
+                                const isSelected = !group.sortAsc$.value;
+                                return html`<span
+                                  style="font-size:14px;color:${isSelected
+                                    ? 'var(--affine-text-emphasis-color)'
+                                    : 'var(--affine-text-secondary-color)'}"
+                                  >Newest first</span
+                                >`;
+                              },
+                              isSelected: !group.sortAsc$.value,
+                              select: () => {
+                                group.setDateSortOrder(false);
+                                return false;
+                              },
+                            }),
+                          ]),
+                        ],
+                      },
+                    }),
+                  ]),
+                ],
+              }),
             ]
           : []),
 
