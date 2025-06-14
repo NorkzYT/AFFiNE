@@ -320,7 +320,7 @@ export class GroupTrait {
     const groups = this.groupsDataList$.value;
     if (!groups) return;
     this.ops.changeRowSort(
-      groups.map(g => g.key),
+      groups.filter((g): g is Group => g !== undefined).map(g => g.key),
       groupKey,
       cardIds
     );
@@ -388,7 +388,9 @@ export class GroupTrait {
     const groups = this.groupsDataList$.value;
     if (!groups) return;
 
-    const keys = groups.map(g => g.key);
+    const keys = groups
+      .filter((g): g is Group => g !== undefined)
+      .map(g => g.key);
     const fromIndex = keys.findIndex(k => k === groupKey);
     if (fromIndex >= 0) {
       keys.splice(fromIndex, 1);
