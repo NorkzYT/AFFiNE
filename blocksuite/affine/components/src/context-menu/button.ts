@@ -21,6 +21,7 @@ export type MenuButtonData = {
   class: ClassInfo;
   select: (ele: HTMLElement) => void | false;
   onHover?: (hover: boolean) => void;
+  closeOnSelect?: boolean;
 };
 
 export class MenuButton extends MenuFocusable {
@@ -83,7 +84,9 @@ export class MenuButton extends MenuFocusable {
   onClick() {
     if (this.data.select(this) !== false) {
       this.menu.options.onComplete?.();
-      this.menu.close();
+      if (this.data.closeOnSelect !== false) {
+        this.menu.close();
+      }
     }
   }
 
@@ -143,7 +146,9 @@ export class MobileMenuButton extends MenuFocusable {
   onClick() {
     if (this.data.select(this) !== false) {
       this.menu.options.onComplete?.();
-      this.menu.close();
+      if (this.data.closeOnSelect !== false) {
+        this.menu.close();
+      }
     }
   }
 
@@ -187,6 +192,7 @@ export const menuButtonItems = {
       select: (ele: HTMLElement) => void | false;
       onHover?: (hover: boolean) => void;
       class?: MenuClass;
+      closeOnSelect?: boolean;
       hide?: () => boolean;
     }) =>
     menu => {
@@ -205,6 +211,7 @@ export const menuButtonItems = {
         },
         onHover: config.onHover,
         select: config.select,
+        closeOnSelect: config.closeOnSelect,
         class: {
           'selected-item': config.isSelected ?? false,
           ...config.class,
