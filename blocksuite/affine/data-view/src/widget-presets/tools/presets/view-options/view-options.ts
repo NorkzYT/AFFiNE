@@ -457,7 +457,9 @@ export const popViewOptions = (
 
   items.push(
     menu.group({
-      items: createSettingMenus(target, dataViewLogic, reopen, () => handler.close()),
+      items: createSettingMenus(target, dataViewLogic, reopen, () =>
+        handler.close()
+      ),
     })
   );
   items.push(

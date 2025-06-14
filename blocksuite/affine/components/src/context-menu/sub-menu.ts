@@ -12,6 +12,7 @@ import { css, html, nothing, type TemplateResult } from 'lit';
 import { property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 
+import { MenuButton } from './button.js';
 import { MenuFocusable } from './focusable.js';
 import { MenuButton } from './button.js';
 import { Menu, type MenuOptions } from './menu.js';
@@ -48,7 +49,7 @@ export class MenuSubMenu extends MenuFocusable {
     MenuButton.styles,
     css`
       .affine-menu-button svg:last-child {
-        transition: transform 120ms cubic-bezier(0.42, 0, 1, 1);
+        transition: transform 150ms cubic-bezier(0.42, 0, 1, 1);
       }
       affine-menu-sub-menu.active .affine-menu-button svg:last-child {
         transform: rotate(90deg);

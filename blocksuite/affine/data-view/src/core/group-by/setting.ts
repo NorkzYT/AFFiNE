@@ -364,11 +364,23 @@ export const popGroupSetting = (
                   options: selectGroupByProperty(group, {
                     onSelect: () => {
                       menuHandler.close();
-                      popGroupSetting(target, group, onBack, onClose, middleware);
+                      popGroupSetting(
+                        target,
+                        group,
+                        onBack,
+                        onClose,
+                        middleware
+                      );
                     },
                     onBack: () => {
                       menuHandler.close();
-                      popGroupSetting(target, group, onBack, onClose, middleware);
+                      popGroupSetting(
+                        target,
+                        group,
+                        onBack,
+                        onClose,
+                        middleware
+                      );
                     },
                     onClose,
                   }),
