@@ -75,6 +75,20 @@ export class Group<
   get view() {
     return this.config.view;
   }
+
+  hide$ = computed(
+    () => this.manager.groupPropertiesMap$.value[this.key]?.hide ?? false
+  );
+
+  hideSet(hide: boolean) {
+    this.manager.setGroupHide(this.key, hide);
+  }
+}
+
+function hasGroupProperties(
+  data: unknown
+): data is { groupProperties?: GroupProperty[] } {
+  return typeof data === 'object' && data !== null && 'groupProperties' in data;
 }
 
 /**
@@ -86,6 +100,19 @@ export class GroupTrait {
   hideEmpty$ = signal<boolean>(true);
   /** Sort order: true for ascending, false for descending */
   sortAsc$ = signal<boolean>(true);
+
+  groupProperties$ = computed(() => {
+    const data = this.view.data$.value;
+    return hasGroupProperties(data) ? (data.groupProperties ?? []) : [];
+  });
+
+  groupPropertiesMap$ = computed(() => {
+    const map: Record<string, GroupProperty> = {};
+    this.groupProperties$.value.forEach(g => {
+      map[g.key] = g;
+    });
+    return map;
+  });
 
   /**
    * Synchronize sortAsc$ with the GroupBy sort descriptor
@@ -103,6 +130,7 @@ export class GroupTrait {
         groupKey: string,
         keys: string[]
       ) => void;
+      changeGroupHide?: (key: string, hide: boolean) => void;
     }
   ) {
     // Keep internal sortAsc flag in sync when GroupBy sort.desc changes
@@ -200,7 +228,10 @@ export class GroupTrait {
       return orderedKeys
         .map(key => map[key])
         .filter(
-          g => g != null && (!this.hideEmpty$.value || g.rows.length > 0)
+          g =>
+            g != null &&
+            !this.isGroupHidden(g.key) &&
+            (!this.hideEmpty$.value || g.rows.length > 0)
         );
     }),
     this.view.isLocked$
@@ -211,6 +242,14 @@ export class GroupTrait {
    */
   setHideEmpty(value: boolean) {
     this.hideEmpty$.value = value;
+  }
+
+  isGroupHidden(key: string): boolean {
+    return this.groupPropertiesMap$.value[key]?.hide ?? false;
+  }
+
+  setGroupHide(key: string, hide: boolean) {
+    this.ops.changeGroupHide?.(key, hide);
   }
 
   /**
