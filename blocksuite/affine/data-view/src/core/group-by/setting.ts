@@ -329,6 +329,7 @@ export const popGroupSetting = (
   target: PopupTarget,
   group: GroupTrait,
   onBack: () => void,
+  onClose?: () => void,
   middleware?: Array<Middleware | null | undefined | false>
 ) => {
   const view = group.view;
@@ -343,6 +344,7 @@ export const popGroupSetting = (
       title: {
         text: 'Group',
         onBack,
+        onClose,
       },
       items: [
         menu.group({
@@ -362,12 +364,13 @@ export const popGroupSetting = (
                   options: selectGroupByProperty(group, {
                     onSelect: () => {
                       menuHandler.close();
-                      popGroupSetting(target, group, onBack, middleware);
+                      popGroupSetting(target, group, onBack, onClose, middleware);
                     },
                     onBack: () => {
                       menuHandler.close();
-                      popGroupSetting(target, group, onBack, middleware);
+                      popGroupSetting(target, group, onBack, onClose, middleware);
                     },
+                    onClose,
                   }),
                   middleware: [
                     autoPlacement({
@@ -391,6 +394,7 @@ export const popGroupSetting = (
                     openOnHover: false,
                     middleware: dropdownSubMenuMiddleware,
                     autoHeight: true,
+                    closeOnSelect: false,
                     postfix: html`
                       <div
                         style="display:flex;align-items:center;gap:4px;font-size:14px;line-height:20px;color:var(--affine-text-secondary-color);margin-left:30px;"
@@ -430,9 +434,10 @@ export const popGroupSetting = (
                             isSelected:
                               group.groupInfo$.value?.config.name === key,
                             select: () => group.changeGroupMode(key),
+                            closeOnSelect: false,
                           })
-                      ),
-                    },
+                    ),
+                  },
                   }),
                 ],
               }),
@@ -443,6 +448,7 @@ export const popGroupSetting = (
                       items: [
                         menu.subMenu({
                           name: 'Start week on',
+                          closeOnSelect: false,
                           postfix: html`
                             <div
                               style="display:flex;align-items:center;gap:4px;font-size:14px;line-height:20px;color:var(--affine-text-secondary-color);margin-left:8px;"
@@ -458,26 +464,27 @@ export const popGroupSetting = (
                               menu.action({
                                 name: 'Monday',
                                 label: () => {
-                                  const isSelected =
-                                    group.groupInfo$.value?.config.name ===
-                                    'date-week-mon';
-                                  return html`<span
-                                    style="font-size:14px;color:${isSelected
-                                      ? 'var(--affine-text-emphasis-color)'
-                                      : 'var(--affine-text-secondary-color)'}"
-                                    >Monday</span
-                                  >`;
-                                },
-                                isSelected:
-                                  group.groupInfo$.value?.config.name ===
-                                  'date-week-mon',
-                                select: () =>
-                                  group.changeGroupMode('date-week-mon'),
-                              }),
-                              menu.action({
-                                name: 'Sunday',
-                                label: () => {
-                                  const isSelected =
+                              const isSelected =
+                                group.groupInfo$.value?.config.name ===
+                                'date-week-mon';
+                              return html`<span
+                                style="font-size:14px;color:${isSelected
+                                  ? 'var(--affine-text-emphasis-color)'
+                                  : 'var(--affine-text-secondary-color)'}"
+                                >Monday</span
+                              >`;
+                            },
+                            isSelected:
+                              group.groupInfo$.value?.config.name ===
+                                'date-week-mon',
+                            select: () =>
+                              group.changeGroupMode('date-week-mon'),
+                            closeOnSelect: false,
+                          }),
+                          menu.action({
+                            name: 'Sunday',
+                            label: () => {
+                              const isSelected =
                                     group.groupInfo$.value?.config.name ===
                                     'date-week-sun';
                                   return html`<span
@@ -487,16 +494,17 @@ export const popGroupSetting = (
                                     >Sunday</span
                                   >`;
                                 },
-                                isSelected:
-                                  group.groupInfo$.value?.config.name ===
+                              isSelected:
+                                group.groupInfo$.value?.config.name ===
                                   'date-week-sun',
-                                select: () =>
-                                  group.changeGroupMode('date-week-sun'),
-                              }),
-                            ],
-                          },
-                        }),
-                      ],
+                            select: () =>
+                              group.changeGroupMode('date-week-sun'),
+                            closeOnSelect: false,
+                          }),
+                        ],
+                      },
+                    }),
+                  ],
                     }),
                   ]
                 : []),
@@ -507,6 +515,7 @@ export const popGroupSetting = (
                     openOnHover: false,
                     middleware: dropdownSubMenuMiddleware,
                     autoHeight: true,
+                    closeOnSelect: false,
                     postfix: html`
                       <div
                         style="display:flex;align-items:center;gap:4px;font-size:14px;line-height:20px;color:var(--affine-text-secondary-color);margin-left:8px;"
@@ -531,6 +540,7 @@ export const popGroupSetting = (
                           },
                           isSelected: group.sortAsc$.value,
                           select: () => group.setDateSortOrder(true),
+                          closeOnSelect: false,
                         }),
                         menu.action({
                           name: 'Newest first',
@@ -545,6 +555,7 @@ export const popGroupSetting = (
                           },
                           isSelected: !group.sortAsc$.value,
                           select: () => group.setDateSortOrder(false),
+                          closeOnSelect: false,
                         }),
                       ],
                     },
