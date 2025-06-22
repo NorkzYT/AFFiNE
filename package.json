@@ -21,6 +21,8 @@
   "scripts": {
     "affine": "r affine.ts",
     "af": "r affine.ts",
+    "validate": "r validate.ts",
+    "vd": "r validate.ts",
     "dev": "yarn affine dev",
     "build": "yarn affine build",
     "lint:eslint": "cross-env NODE_OPTIONS=\"--max-old-space-size=8192\" eslint --report-unused-disable-directives-severity=off . --cache",
