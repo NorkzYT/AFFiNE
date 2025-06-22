@@ -1,17 +1,27 @@
-import { Workspace } from '@affine-tools/utils/workspace';
+import type { YarnWorkspaceItem } from '@affine-tools/utils/types';
+import { AliasToPackage } from '@affine-tools/utils/distribution';
+import { Workspace, type PackageName } from '@affine-tools/utils/workspace';
 import { Cli } from 'clipanion';
 
 import { BuildCommand } from './build';
-import { BundleCommand } from './bundle';
-import { CertCommand } from './cert';
 import { CleanCommand } from './clean';
 import type { CliContext } from './context';
 import { DevCommand } from './dev';
 import { InitCommand } from './init';
 import { RunCommand } from './run';
 
+const packageList: YarnWorkspaceItem[] = [
+  { name: '@validate/web', location: 'apps/web', workspaceDependencies: [] },
+  { name: '@validate/server', location: 'apps/server', workspaceDependencies: [] },
+];
+
+AliasToPackage.set('server', '@validate/server' as unknown as PackageName);
+
 class ValidateDevCommand extends DevCommand {
-  protected override availablePackages = Workspace.PackageNames;
+  protected override availablePackages: PackageName[] = [
+    '@validate/web',
+    '@validate/server',
+  ] as unknown as PackageName[];
 }
 
 const cli = new Cli<CliContext>({
@@ -27,11 +37,9 @@ cli.register(InitCommand);
 cli.register(CleanCommand);
 cli.register(BuildCommand);
 cli.register(ValidateDevCommand);
-cli.register(BundleCommand);
-cli.register(CertCommand);
 
 await cli.runExit(process.argv.slice(2), {
-  workspace: new Workspace(),
+  workspace: new Workspace(packageList as any),
   stdin: process.stdin,
   stdout: process.stdout,
   stderr: process.stderr,
