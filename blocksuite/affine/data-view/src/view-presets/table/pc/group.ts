@@ -3,7 +3,7 @@ import {
   popFilterableSimpleMenu,
   popupTargetFromElement,
 } from '@blocksuite/affine-components/context-menu';
-import { GroupToggleArrowIcon } from '@blocksuite/affine-components/icons';
+import { ToggleDownIcon, ToggleRightIcon } from '@blocksuite/icons/lit';
 import { SignalWatcher, WithDisposable } from '@blocksuite/global/lit';
 import { PlusIcon } from '@blocksuite/icons/lit';
 import { ShadowlessElement } from '@blocksuite/std';
@@ -113,14 +113,8 @@ const styles = css`
   .group-toggle-btn svg {
     width: 16px;
     height: 16px;
-    transition: transform 120ms cubic-bezier(0.42, 0, 1, 1);
     flex-shrink: 0;
     user-select: none;
-    transform: rotate(-90deg);
-  }
-
-  .group-toggle-btn.expanded svg {
-    transform: rotate(0deg);
   }
 `;
 
@@ -228,7 +222,7 @@ export class TableGroup extends SignalWatcher(
         style="position: sticky;left: 0;width: max-content;padding: 6px 0;margin-bottom: 4px;display:flex;align-items:center;gap: 8px;max-width: 400px"
       >
         <div
-          class=${`group-toggle-btn ${this.collapsed$.value ? '' : 'expanded'}`}
+          class="group-toggle-btn"
           role="button"
           aria-expanded=${this.collapsed$.value ? 'false' : 'true'}
           aria-label=${this.collapsed$.value
@@ -243,7 +237,9 @@ export class TableGroup extends SignalWatcher(
             }
           }}
         >
-          ${GroupToggleArrowIcon}
+          ${this.collapsed$.value
+            ? ToggleRightIcon({ width: '16px', height: '16px' })
+            : ToggleDownIcon({ width: '16px', height: '16px' })}
         </div>
 
         ${GroupTitle(this.group, {
