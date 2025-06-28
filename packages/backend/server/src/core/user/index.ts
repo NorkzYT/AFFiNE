@@ -1,7 +1,8 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 
 import { PermissionModule } from '../permission';
 import { StorageModule } from '../storage';
+import { AuthModule } from '../auth';
 import { UserAvatarController } from './controller';
 import {
   UserManagementResolver,
@@ -10,7 +11,7 @@ import {
 } from './resolver';
 
 @Module({
-  imports: [StorageModule, PermissionModule],
+  imports: [StorageModule, PermissionModule, forwardRef(() => AuthModule)],
   providers: [UserResolver, UserManagementResolver, UserSettingsResolver],
   controllers: [UserAvatarController],
 })

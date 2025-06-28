@@ -40,6 +40,11 @@ export class UserType implements CurrentUser {
   })
   hasPassword!: boolean | null;
 
+  @Field(() => Boolean, {
+    description: 'Two factor authentication enabled',
+  })
+  twoFactorEnabled!: boolean;
+
   @Field(() => Date, {
     deprecationReason: 'useless',
     description: 'User email verified',

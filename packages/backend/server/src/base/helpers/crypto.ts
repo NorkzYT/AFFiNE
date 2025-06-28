@@ -12,6 +12,7 @@ import {
 } from 'node:crypto';
 
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { authenticator } from 'otplib';
 import {
   hash as hashPassword,
   verify as verifyPassword,
@@ -183,6 +184,18 @@ export class CryptoHelper implements OnModuleInit {
     }
 
     return otp;
+  }
+
+  generateTotpSecret() {
+    return authenticator.generateSecret();
+  }
+
+  verifyTotp(token: string, secret: string) {
+    try {
+      return authenticator.check(token, secret);
+    } catch {
+      return false;
+    }
   }
 
   sha256(data: string) {

@@ -43,6 +43,7 @@ interface PreflightResponse {
 interface SignInCredential {
   email: string;
   password?: string;
+  totp?: string;
   callbackUrl?: string;
   client_nonce?: string;
 }
@@ -128,7 +129,8 @@ export class AuthController {
         req,
         res,
         credential.email,
-        credential.password
+        credential.password,
+        credential.totp
       );
     } else {
       await this.sendMagicLink(
@@ -146,9 +148,19 @@ export class AuthController {
     req: Request,
     res: Response,
     email: string,
-    password: string
+    password: string,
+    totp?: string
   ) {
     const user = await this.auth.signIn(email, password);
+
+    if (
+      this.config.auth.twoFactorEnabled &&
+      user.twoFactorSecret
+    ) {
+      if (!totp || !this.auth.verifyTotp(totp, user.twoFactorSecret)) {
+        throw new WrongSignInCredentials({ email });
+      }
+    }
 
     await this.auth.setCookies(req, res, user.id);
     res.status(HttpStatus.OK).send(user);

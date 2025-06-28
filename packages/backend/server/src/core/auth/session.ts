@@ -48,6 +48,7 @@ export interface CurrentUser
   extends Pick<User, 'id' | 'email' | 'avatarUrl' | 'name' | 'disabled'> {
   hasPassword: boolean | null;
   emailVerified: boolean;
+  twoFactorEnabled: boolean;
 }
 
 // interface and variable don't conflict
