@@ -203,6 +203,9 @@ export const listUsersQuery = {
     hasPassword
     emailVerified
     avatarUrl
+    settings {
+      twoFactorEnabled
+    }
   }
   usersCount
 }`,
@@ -235,6 +238,30 @@ export const updateAccountMutation = {
     name
     email
   }
+}`,
+};
+
+export const adminGenerateTwoFactorSecretMutation = {
+  id: 'adminGenerateTwoFactorSecretMutation' as const,
+  op: 'adminGenerateTwoFactorSecret',
+  query: `mutation adminGenerateTwoFactorSecret($userId: String!) {
+  adminGenerateTwoFactorSecret(userId: $userId)
+}`,
+};
+
+export const adminEnableTwoFactorMutation = {
+  id: 'adminEnableTwoFactorMutation' as const,
+  op: 'adminEnableTwoFactor',
+  query: `mutation adminEnableTwoFactor($userId: String!, $code: String!) {
+  adminEnableTwoFactor(userId: $userId, code: $code)
+}`,
+};
+
+export const adminDisableTwoFactorMutation = {
+  id: 'adminDisableTwoFactorMutation' as const,
+  op: 'adminDisableTwoFactor',
+  query: `mutation adminDisableTwoFactor($userId: String!) {
+  adminDisableTwoFactor(userId: $userId)
 }`,
 };
 

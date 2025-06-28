@@ -224,8 +224,11 @@ export class UserSettingsResolver {
     name: 'settings',
     description: 'Get user settings',
   })
-  async getSettings(@CurrentUser() me: CurrentUser): Promise<UserSettingsType> {
-    return await this.models.userSettings.get(me.id);
+  async getSettings(
+    @Parent() user: UserType,
+    @CurrentUser() me: CurrentUser
+  ): Promise<UserSettingsType> {
+    return await this.models.userSettings.get(user.id);
   }
 }
 
@@ -422,5 +425,36 @@ export class UserManagementResolver {
   })
   async enableUser(@Args('id') id: string): Promise<UserType> {
     return sessionUser(await this.models.user.enable(id));
+  }
+
+  @Mutation(() => String, { description: 'Generate 2FA secret for user' })
+  async adminGenerateTwoFactorSecret(@Args('userId') userId: string) {
+    const { generateSecret } = await import('../auth/totp.js');
+    const secret = generateSecret();
+    await this.models.userSettings.set(userId, { twoFactorSecret: secret });
+    return secret;
+  }
+
+  @Mutation(() => Boolean, { description: 'Enable user 2FA' })
+  async adminEnableTwoFactor(
+    @Args('userId') userId: string,
+    @Args('code') code: string
+  ) {
+    const settings = await this.models.userSettings.get(userId);
+    const { verifyTotp } = await import('../auth/totp.js');
+    if (!settings.twoFactorSecret || !verifyTotp(settings.twoFactorSecret, code)) {
+      throw new Error('Invalid two factor code');
+    }
+    await this.models.userSettings.set(userId, { twoFactorEnabled: true });
+    return true;
+  }
+
+  @Mutation(() => Boolean, { description: 'Disable user 2FA' })
+  async adminDisableTwoFactor(@Args('userId') userId: string) {
+    await this.models.userSettings.set(userId, {
+      twoFactorEnabled: false,
+      twoFactorSecret: undefined,
+    });
+    return true;
   }
 }

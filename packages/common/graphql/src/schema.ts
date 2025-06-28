@@ -2930,6 +2930,7 @@ export type ListUsersQuery = {
     hasPassword: boolean | null;
     emailVerified: boolean;
     avatarUrl: string | null;
+    settings: { __typename?: 'UserSettingsType'; twoFactorEnabled: boolean };
   }>;
 };
 
@@ -2970,6 +2971,34 @@ export type UpdateAccountMutation = {
     name: string;
     email: string;
   };
+};
+
+export type AdminGenerateTwoFactorSecretMutationVariables = Exact<{
+  userId: Scalars['String']['input'];
+}>;
+
+export type AdminGenerateTwoFactorSecretMutation = {
+  __typename?: 'Mutation';
+  adminGenerateTwoFactorSecret: string;
+};
+
+export type AdminEnableTwoFactorMutationVariables = Exact<{
+  userId: Scalars['String']['input'];
+  code: Scalars['String']['input'];
+}>;
+
+export type AdminEnableTwoFactorMutation = {
+  __typename?: 'Mutation';
+  adminEnableTwoFactor: boolean;
+};
+
+export type AdminDisableTwoFactorMutationVariables = Exact<{
+  userId: Scalars['String']['input'];
+}>;
+
+export type AdminDisableTwoFactorMutation = {
+  __typename?: 'Mutation';
+  adminDisableTwoFactor: boolean;
 };
 
 export type UpdateAppConfigMutationVariables = Exact<{
@@ -5495,6 +5524,21 @@ export type Mutations =
       name: 'updateAccountMutation';
       variables: UpdateAccountMutationVariables;
       response: UpdateAccountMutation;
+    }
+  | {
+      name: 'adminGenerateTwoFactorSecretMutation';
+      variables: AdminGenerateTwoFactorSecretMutationVariables;
+      response: AdminGenerateTwoFactorSecretMutation;
+    }
+  | {
+      name: 'adminEnableTwoFactorMutation';
+      variables: AdminEnableTwoFactorMutationVariables;
+      response: AdminEnableTwoFactorMutation;
+    }
+  | {
+      name: 'adminDisableTwoFactorMutation';
+      variables: AdminDisableTwoFactorMutationVariables;
+      response: AdminDisableTwoFactorMutation;
     }
   | {
       name: 'updateAppConfigMutation';

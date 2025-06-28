@@ -1133,6 +1133,15 @@ type Mutation {
   """Reenable an banned user"""
   enableUser(id: String!): UserType!
 
+  """Generate 2FA secret for user"""
+  adminGenerateTwoFactorSecret(userId: String!): String!
+
+  """Enable user 2FA"""
+  adminEnableTwoFactor(userId: String!, code: String!): Boolean!
+
+  """Disable user 2FA"""
+  adminDisableTwoFactor(userId: String!): Boolean!
+
   """Create a chat session"""
   forkCopilotSession(options: ForkChatSessionInput!): String!
   generateLicenseKey(sessionId: String!): String!

@@ -27,6 +27,9 @@ import {
   useDeleteUser,
   useDisableUser,
   useEnableUser,
+  useGenerateTwoFactorSecret,
+  useEnableTwoFactor,
+  useDisableTwoFactor,
   useResetUserPassword,
 } from './use-user-management';
 import { UpdateUserForm } from './user-form';
@@ -46,6 +49,9 @@ export function DataTableRowActions({ user }: DataTableRowActionsProps) {
   const deleteUser = useDeleteUser();
   const disableUser = useDisableUser();
   const enableUser = useEnableUser();
+  const generateSecret = useGenerateTwoFactorSecret();
+  const enableTwoFactor = useEnableTwoFactor();
+  const disableTwoFactor = useDisableTwoFactor();
   const { resetPasswordLink, onResetPassword } = useResetUserPassword();
 
   const openResetPasswordDialog = useCallback(() => {
@@ -96,6 +102,26 @@ export function DataTableRowActions({ user }: DataTableRowActionsProps) {
   const handleEnable = useCallback(() => {
     enableUser(user.id, handleEnabling);
   }, [enableUser, handleEnabling, user.id]);
+
+  const handleEnable2FA = useCallback(() => {
+    generateSecret({ userId: user.id })
+      .then(async res => {
+        const secret = res.adminGenerateTwoFactorSecret;
+        const code = window.prompt(
+          `Secret: ${secret}\nEnter code from authenticator:`
+        );
+        if (!code) return;
+        await enableTwoFactor({ userId: user.id, code });
+        toast('Two factor enabled');
+      })
+      .catch(e => toast.error('Failed to enable 2FA: ' + e.message));
+  }, [generateSecret, enableTwoFactor, user.id]);
+
+  const handleDisable2FA = useCallback(() => {
+    disableTwoFactor({ userId: user.id })
+      .then(() => toast('Two factor disabled'))
+      .catch(e => toast.error('Failed to disable 2FA: ' + e.message));
+  }, [disableTwoFactor, user.id]);
 
   const openDeleteDialog = useCallback(() => {
     setDeleteDialogOpen(true);
@@ -184,6 +210,21 @@ export function DataTableRowActions({ user }: DataTableRowActionsProps) {
             <LockIcon fontSize={20} />
             {user.hasPassword ? 'Reset Password' : 'Setup Account'}
           </DropdownMenuItem>
+          {user.settings?.twoFactorEnabled ? (
+            <DropdownMenuItem
+              className="px-2 py-[6px] text-sm font-normal gap-2 cursor-pointer"
+              onSelect={handleDisable2FA}
+            >
+              Disable 2FA
+            </DropdownMenuItem>
+          ) : (
+            <DropdownMenuItem
+              className="px-2 py-[6px] text-sm font-normal gap-2 cursor-pointer"
+              onSelect={handleEnable2FA}
+            >
+              Enable 2FA
+            </DropdownMenuItem>
+          )}
           {user.disabled && (
             <DropdownMenuItem
               className="px-2 py-[6px] text-sm font-normal gap-2 cursor-pointer"

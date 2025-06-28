@@ -15,6 +15,9 @@ import {
   listUsersQuery,
   updateAccountFeaturesMutation,
   updateAccountMutation,
+  adminGenerateTwoFactorSecretMutation,
+  adminEnableTwoFactorMutation,
+  adminDisableTwoFactorMutation,
 } from '@affine/graphql';
 import { useCallback, useMemo, useState } from 'react';
 import { toast } from 'sonner';
@@ -221,6 +224,27 @@ export const useDisableUser = () => {
   );
 
   return disableById;
+};
+
+export const useGenerateTwoFactorSecret = () => {
+  const { trigger } = useMutation({
+    mutation: adminGenerateTwoFactorSecretMutation,
+  });
+  return trigger;
+};
+
+export const useEnableTwoFactor = () => {
+  const { trigger } = useMutation({
+    mutation: adminEnableTwoFactorMutation,
+  });
+  return trigger;
+};
+
+export const useDisableTwoFactor = () => {
+  const { trigger } = useMutation({
+    mutation: adminDisableTwoFactorMutation,
+  });
+  return trigger;
 };
 
 export const useImportUsers = () => {
