@@ -176,6 +176,50 @@ export class UserSettingsResolver {
     return true;
   }
 
+  @Mutation(() => String, {
+    name: 'generateTwoFactorSecret',
+    description: 'Generate two factor secret',
+  })
+  async generateTwoFactorSecret(@CurrentUser() user: CurrentUser) {
+    const { generateSecret } = await import('../auth/totp.js');
+    const secret = generateSecret();
+    await this.models.userSettings.set(user.id, {
+      twoFactorSecret: secret,
+    });
+    return secret;
+  }
+
+  @Mutation(() => Boolean, {
+    name: 'enableTwoFactor',
+    description: 'Enable two factor authentication',
+  })
+  async enableTwoFactor(
+    @CurrentUser() user: CurrentUser,
+    @Args('code') code: string
+  ) {
+    const settings = await this.models.userSettings.get(user.id);
+    const { verifyTotp } = await import('../auth/totp.js');
+    if (!settings.twoFactorSecret || !verifyTotp(settings.twoFactorSecret, code)) {
+      throw new Error('Invalid two factor code');
+    }
+    await this.models.userSettings.set(user.id, {
+      twoFactorEnabled: true,
+    });
+    return true;
+  }
+
+  @Mutation(() => Boolean, {
+    name: 'disableTwoFactor',
+    description: 'Disable two factor authentication',
+  })
+  async disableTwoFactor(@CurrentUser() user: CurrentUser) {
+    await this.models.userSettings.set(user.id, {
+      twoFactorEnabled: false,
+      twoFactorSecret: undefined,
+    });
+    return true;
+  }
+
   @ResolveField(() => UserSettingsType, {
     name: 'settings',
     description: 'Get user settings',

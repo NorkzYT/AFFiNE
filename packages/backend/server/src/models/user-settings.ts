@@ -7,6 +7,8 @@ import { BaseModel } from './base';
 export const UserSettingsSchema = z.object({
   receiveInvitationEmail: z.boolean().default(true),
   receiveMentionEmail: z.boolean().default(true),
+  twoFactorEnabled: z.boolean().default(false),
+  twoFactorSecret: z.string().optional(),
 });
 
 export type UserSettingsInput = z.input<typeof UserSettingsSchema>;

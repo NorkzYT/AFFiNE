@@ -121,6 +121,9 @@ export class UserSettingsType implements UserSettings {
 
   @Field({ description: 'Receive mention email' })
   receiveMentionEmail!: boolean;
+
+  @Field({ description: 'Enable two factor authentication' })
+  twoFactorEnabled!: boolean;
 }
 
 @InputType()
@@ -145,4 +148,7 @@ export class UpdateUserSettingsInput implements UserSettingsInput {
 
   @Field({ description: 'Receive mention email', nullable: true })
   receiveMentionEmail?: boolean;
+
+  @Field({ description: 'Enable two factor authentication', nullable: true })
+  twoFactorEnabled?: boolean;
 }

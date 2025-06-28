@@ -2387,6 +2387,8 @@ export interface UpdateUserSettingsInput {
   receiveInvitationEmail?: InputMaybe<Scalars['Boolean']['input']>;
   /** Receive mention email */
   receiveMentionEmail?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Enable two factor authentication */
+  twoFactorEnabled?: InputMaybe<Scalars['Boolean']['input']>;
 }
 
 export interface UpdateWorkspaceInput {
@@ -2446,6 +2448,8 @@ export interface UserSettingsType {
   receiveInvitationEmail: Scalars['Boolean']['output'];
   /** Receive mention email */
   receiveMentionEmail: Scalars['Boolean']['output'];
+  /** Enable two factor authentication */
+  twoFactorEnabled: Scalars['Boolean']['output'];
 }
 
 export interface UserType {
@@ -4144,6 +4148,7 @@ export type GetUserSettingsQuery = {
       __typename?: 'UserSettingsType';
       receiveInvitationEmail: boolean;
       receiveMentionEmail: boolean;
+      twoFactorEnabled: boolean;
     };
   } | null;
 };

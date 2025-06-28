@@ -43,6 +43,7 @@ interface PreflightResponse {
 interface SignInCredential {
   email: string;
   password?: string;
+  code?: string;
   callbackUrl?: string;
   client_nonce?: string;
 }
@@ -50,6 +51,7 @@ interface SignInCredential {
 interface MagicLinkCredential {
   email: string;
   token: string;
+  code?: string;
   client_nonce?: string;
 }
 
@@ -128,7 +130,8 @@ export class AuthController {
         req,
         res,
         credential.email,
-        credential.password
+        credential.password,
+        credential.code
       );
     } else {
       await this.sendMagicLink(
@@ -146,9 +149,18 @@ export class AuthController {
     req: Request,
     res: Response,
     email: string,
-    password: string
+    password: string,
+    code?: string
   ) {
     const user = await this.auth.signIn(email, password);
+
+    const settings = await this.models.userSettings.get(user.id);
+    if (settings.twoFactorEnabled) {
+      const { verifyTotp } = await import('./totp.js');
+      if (!code || !settings.twoFactorSecret || !verifyTotp(settings.twoFactorSecret, code)) {
+        throw new WrongSignInCredentials({ email });
+      }
+    }
 
     await this.auth.setCookies(req, res, user.id);
     res.status(HttpStatus.OK).send(user);
@@ -261,7 +273,7 @@ export class AuthController {
     @Req() req: Request,
     @Res() res: Response,
     @Body()
-    { email, token: otp, client_nonce: clientNonce }: MagicLinkCredential
+    { email, token: otp, client_nonce: clientNonce, code }: MagicLinkCredential
   ) {
     if (!otp || !email) {
       throw new EmailTokenNotFound();
@@ -301,6 +313,14 @@ export class AuthController {
     }
 
     const user = await this.models.user.fulfill(email);
+
+    const settings = await this.models.userSettings.get(user.id);
+    if (settings.twoFactorEnabled) {
+      const { verifyTotp } = await import('./totp.js');
+      if (!code || !settings.twoFactorSecret || !verifyTotp(settings.twoFactorSecret, code)) {
+        throw new WrongSignInCredentials({ email });
+      }
+    }
 
     await this.auth.setCookies(req, res, user.id);
     res.send({ id: user.id });

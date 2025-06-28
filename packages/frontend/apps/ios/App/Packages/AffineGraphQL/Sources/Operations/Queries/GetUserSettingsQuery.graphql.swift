@@ -7,7 +7,7 @@ public class GetUserSettingsQuery: GraphQLQuery {
   public static let operationName: String = "getUserSettings"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"query getUserSettings { currentUser { __typename settings { __typename receiveInvitationEmail receiveMentionEmail } } }"#
+      #"query getUserSettings { currentUser { __typename settings { __typename receiveInvitationEmail receiveMentionEmail twoFactorEnabled } } }"#
     ))
 
   public init() {}
@@ -52,12 +52,16 @@ public class GetUserSettingsQuery: GraphQLQuery {
           .field("__typename", String.self),
           .field("receiveInvitationEmail", Bool.self),
           .field("receiveMentionEmail", Bool.self),
+          .field("twoFactorEnabled", Bool.self),
         ] }
 
         /// Receive invitation email
         public var receiveInvitationEmail: Bool { __data["receiveInvitationEmail"] }
         /// Receive mention email
         public var receiveMentionEmail: Bool { __data["receiveMentionEmail"] }
+
+        /// Enable two factor authentication
+        public var twoFactorEnabled: Bool { __data["twoFactorEnabled"] }
       }
     }
   }

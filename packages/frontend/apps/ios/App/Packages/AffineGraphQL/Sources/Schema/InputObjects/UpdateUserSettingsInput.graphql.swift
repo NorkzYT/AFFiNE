@@ -12,11 +12,13 @@ public struct UpdateUserSettingsInput: InputObject {
 
   public init(
     receiveInvitationEmail: GraphQLNullable<Bool> = nil,
-    receiveMentionEmail: GraphQLNullable<Bool> = nil
+    receiveMentionEmail: GraphQLNullable<Bool> = nil,
+    twoFactorEnabled: GraphQLNullable<Bool> = nil
   ) {
     __data = InputDict([
       "receiveInvitationEmail": receiveInvitationEmail,
-      "receiveMentionEmail": receiveMentionEmail
+      "receiveMentionEmail": receiveMentionEmail,
+      "twoFactorEnabled": twoFactorEnabled
     ])
   }
 
@@ -30,5 +32,11 @@ public struct UpdateUserSettingsInput: InputObject {
   public var receiveMentionEmail: GraphQLNullable<Bool> {
     get { __data["receiveMentionEmail"] }
     set { __data["receiveMentionEmail"] = newValue }
+  }
+
+  /// Enable two factor authentication
+  public var twoFactorEnabled: GraphQLNullable<Bool> {
+    get { __data["twoFactorEnabled"] }
+    set { __data["twoFactorEnabled"] = newValue }
   }
 }

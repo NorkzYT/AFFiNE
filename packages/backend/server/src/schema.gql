@@ -1205,6 +1205,9 @@ type Mutation {
 
   """Update user settings"""
   updateSettings(input: UpdateUserSettingsInput!): Boolean!
+  generateTwoFactorSecret: String!
+  enableTwoFactor(code: String!): Boolean!
+  disableTwoFactor: Boolean!
   updateSubscriptionRecurring(idempotencyKey: String @deprecated(reason: "use header `Idempotency-Key`"), plan: SubscriptionPlan = Pro, recurring: SubscriptionRecurring!, workspaceId: String): SubscriptionType!
 
   """Update an user"""
@@ -1812,6 +1815,9 @@ input UpdateUserSettingsInput {
 
   """Receive mention email"""
   receiveMentionEmail: Boolean
+
+  """Enable two factor authentication"""
+  twoFactorEnabled: Boolean
 }
 
 input UpdateWorkspaceInput {
@@ -1872,6 +1878,9 @@ type UserSettingsType {
 
   """Receive mention email"""
   receiveMentionEmail: Boolean!
+
+  """Enable two factor authentication"""
+  twoFactorEnabled: Boolean!
 }
 
 type UserType {

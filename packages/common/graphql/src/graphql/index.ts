@@ -1225,6 +1225,7 @@ export const getUserSettingsQuery = {
     settings {
       receiveInvitationEmail
       receiveMentionEmail
+      twoFactorEnabled
     }
   }
 }`,
