@@ -22,7 +22,8 @@ import {
 } from '../../base';
 import { Models, UserSettingsSchema } from '../../models';
 import { Public } from '../auth/guard';
-import { sessionUser } from '../auth/service';
+import { sessionUser, AuthService } from '../auth/service';
+import { Inject, forwardRef } from '@nestjs/common';
 import { CurrentUser } from '../auth/session';
 import { Admin } from '../common';
 import { AvatarStorage } from '../storage';
@@ -43,7 +44,8 @@ import {
 export class UserResolver {
   constructor(
     private readonly storage: AvatarStorage,
-    private readonly models: Models
+    private readonly models: Models,
+    @Inject(forwardRef(() => AuthService)) private readonly auth: AuthService
   ) {}
 
   @Throttle('strict')
@@ -135,6 +137,19 @@ export class UserResolver {
     }
 
     return sessionUser(await this.models.user.update(user.id, input));
+  }
+
+  @Mutation(() => String)
+  async enableTwoFactor(@CurrentUser() user: CurrentUser) {
+    const secret = this.auth.generateTotpSecret();
+    await this.models.user.update(user.id, { twoFactorSecret: secret });
+    return secret;
+  }
+
+  @Mutation(() => Boolean)
+  async disableTwoFactor(@CurrentUser() user: CurrentUser) {
+    await this.models.user.update(user.id, { twoFactorSecret: null });
+    return true;
   }
 
   @Mutation(() => RemoveAvatar, {

@@ -10,6 +10,7 @@ export interface AuthConfig {
   allowSignup: boolean;
   requireEmailDomainVerification: boolean;
   requireEmailVerification: boolean;
+  twoFactorEnabled: boolean;
   passwordRequirements: ConfigItem<{
     min: number;
     max: number;
@@ -34,6 +35,10 @@ defineModuleConfig('auth', {
   requireEmailVerification: {
     desc: 'Whether require email verification before accessing restricted resources(not implemented).',
     default: true,
+  },
+  twoFactorEnabled: {
+    desc: 'Enable two factor authentication for password sign in.',
+    default: false,
   },
   passwordRequirements: {
     desc: 'The password strength requirements when set new password.',

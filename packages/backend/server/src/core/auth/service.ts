@@ -19,6 +19,7 @@ export function sessionUser(
   return assign(pick(user, 'id', 'email', 'avatarUrl', 'name', 'disabled'), {
     hasPassword: user.password !== null,
     emailVerified: user.emailVerifiedAt !== null,
+    twoFactorEnabled: !!user.twoFactorSecret,
   });
 }
 
@@ -47,6 +48,14 @@ export class AuthService implements OnApplicationBootstrap {
     private readonly mailer: Mailer,
     private readonly feature: FeatureService
   ) {}
+
+  generateTotpSecret() {
+    return this.crypto.generateTotpSecret();
+  }
+
+  verifyTotp(token: string, secret: string) {
+    return this.crypto.verifyTotp(token, secret);
+  }
 
   async onApplicationBootstrap() {
     if (env.dev) {
