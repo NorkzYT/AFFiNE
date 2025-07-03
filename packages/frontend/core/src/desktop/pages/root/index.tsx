@@ -20,7 +20,10 @@ export const RootWrapper = () => {
     defaultServerService.server
       .waitForConfigRevalidation(abortController.signal)
       .then(() => setIsServerReady(true))
-      .catch(console.error);
+      .catch(err => {
+        console.error(err);
+        setIsServerReady(true);
+      });
     return () => abortController.abort();
   }, [defaultServerService, isServerReady]);
 
@@ -28,7 +31,7 @@ export const RootWrapper = () => {
     <FrameworkScope scope={defaultServerService.server.scope}>
       <GlobalDialogs />
       <NotificationCenter />
-      <Outlet />
+      {isServerReady && <Outlet />}
       <CustomThemeModifier />
       {BUILD_CONFIG.isElectron && <FindInPagePopup />}
     </FrameworkScope>
