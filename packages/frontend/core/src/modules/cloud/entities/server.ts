@@ -102,10 +102,11 @@ export class Server extends Entity<{
   async waitForConfigRevalidation(signal?: AbortSignal) {
     try {
       this.revalidateConfig();
-      await this.isConfigRevalidating$.waitFor(
-        isRevalidating => !isRevalidating,
-        signal
-      );
+      // ensure config revalidation actually starts before waiting for it to
+      // finish. otherwise the initial false value would resolve immediately
+      // and we would return before the config is fetched from the server.
+      await this.isConfigRevalidating$.waitFor(v => v === true, signal);
+      await this.isConfigRevalidating$.waitFor(v => v === false, signal);
     } catch (error) {
       if (error instanceof Event && error.type === 'abort') return;
       console.error('Config revalidation failed:', error);

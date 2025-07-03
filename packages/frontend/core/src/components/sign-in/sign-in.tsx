@@ -59,6 +59,10 @@ export const SignInStep = ({
       c => c.type === ServerDeploymentType.Selfhosted
     )
   );
+  const allowGuestDemo = useLiveData(
+    serverService.server.config$.selector(c => c.allowGuestDemoWorkspace)
+  );
+  const guestDemoEnabled = allowGuestDemo !== false;
   const authService = useService(AuthService);
   const [isMutating, setIsMutating] = useState(false);
 
@@ -161,14 +165,14 @@ export const SignInStep = ({
           {t['com.affine.auth.sign.email.continue']()}
         </Button>
 
-        {!isSelfhosted && (
+        {!isSelfhosted && guestDemoEnabled && (
           <>
             <div className={style.authMessage}>
               {/*prettier-ignore*/}
               <Trans i18nKey="com.affine.auth.sign.message">
                 By clicking &quot;Continue with Google/Email&quot; above, you acknowledge that
                 you agree to AFFiNE&apos;s <a href="https://affine.pro/terms" target="_blank" rel="noreferrer">Terms of Conditions</a> and <a href="https://affine.pro/privacy" target="_blank" rel="noreferrer">Privacy Policy</a>.
-            </Trans>
+              </Trans>
             </div>
             <div className={style.skipDivider}>
               <div className={style.skipDividerLine} />

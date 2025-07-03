@@ -29,6 +29,7 @@ vi.mock('@toeverything/infra', () => {
               },
             },
           },
+          waitForConfigRevalidation: vi.fn(() => Promise.resolve()),
         },
       },
     }),

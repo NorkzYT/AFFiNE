@@ -57,7 +57,7 @@ export const Component = ({
       defaultServerService.server.config$.selector(
         c => c.allowGuestDemoWorkspace
       )
-    ) ?? true;
+    );
 
   const workspacesService = useService(WorkspacesService);
   const list = useLiveData(workspacesService.list.workspaces$);
@@ -147,6 +147,9 @@ export const Component = ({
     if (listIsLoading || list.length > 0) {
       return;
     }
+    if (!allowGuestDemo && !loggedIn) {
+      return;
+    }
     createFirstAppData(workspacesService)
       .then(createdWorkspace => {
         if (createdWorkspace) {
@@ -174,6 +177,7 @@ export const Component = ({
     loggedIn,
     listIsLoading,
     list,
+    allowGuestDemo,
   ]);
 
   if (navigating || creating) {
