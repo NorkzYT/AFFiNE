@@ -34,6 +34,7 @@ export const useSignOut = ({
     onConfirm?.()?.catch(console.error);
     try {
       await authService.signOut();
+      await defaultServerService.server.waitForConfigRevalidation();
       if (
         defaultServerService.server.config$.value.allowGuestDemoWorkspace !==
         false
