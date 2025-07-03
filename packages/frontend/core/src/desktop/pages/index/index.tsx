@@ -57,7 +57,7 @@ export const Component = ({
       defaultServerService.server.config$.selector(
         c => c.allowGuestDemoWorkspace
       )
-    ) ?? true;
+    );
 
   const workspacesService = useService(WorkspacesService);
   const list = useLiveData(workspacesService.list.workspaces$);
